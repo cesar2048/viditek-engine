@@ -7,12 +7,8 @@ type VideoCollection struct {
 }
 
 // GeneratePreview generates a derivative video from the original
-func (v *VideoCollection) GeneratePreview(derivativeName string, newProperties VideoMeta) {
-	newVideo := Video{}
-	newVideo.Title = derivativeName
-	newVideo.URL = "https://new.domain/new-url"
-	newVideo.properties = newProperties
-
+func (v *VideoCollection) GeneratePreview(processor VideoProcessor, derivativeName string, newProperties VideoMeta) {
+	newVideo := processor.ConvertVideo(&v.Original, newProperties)
 	v.Derivatives[derivativeName] = newVideo
 }
 
@@ -20,7 +16,7 @@ func (v *VideoCollection) GeneratePreview(derivativeName string, newProperties V
 
 // VideoProcessor is any implementation that makes transformations on videos
 type VideoProcessor interface {
-	ConvertVideo(Video, VideoMeta) Video
+	ConvertVideo(*Video, VideoMeta) Video
 }
 
 // VideoMeta holds properties about dimensions
